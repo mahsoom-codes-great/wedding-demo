@@ -81,7 +81,8 @@
     .photo-card:hover img, .photo-card:focus-within img { transform: scale(1.07); filter: saturate(1.05); }
     .photo-card .tag { transition: transform .5s ease, opacity .5s ease; }
     .photo-card::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 50%, rgba(10,9,8,0.82) 100%); pointer-events: none; }
-    .photo-card.img-failed img { display: none; }
+    .photo-card.img-failed img, .hero-photo.img-failed img { display: none; }
+    .hero-photo.img-failed { background: radial-gradient(circle at 40% 35%, rgba(212,175,55,0.22), transparent 60%), linear-gradient(160deg, #2a2420, #120f0d); }
     .photo-card.img-failed { background: radial-gradient(circle at 30% 30%, rgba(212,175,55,0.18), transparent 55%), linear-gradient(135deg, #2a2420, #120f0d); }
 
     .gallery-item { transition: opacity .45s ease, transform .45s ease; }
@@ -132,12 +133,83 @@
     .reveal { transition: transform .9s cubic-bezier(.2,.7,.2,1), opacity .9s ease; }
     .js .reveal:not(.in) { transform: translateY(14px); }
 
+    /* ---------- Motion ---------- */
+    /* Gold dust drifting through the hero */
+    #dust { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+
+    /* Headline: words rise in on load */
+    .word { display: inline-block; opacity: 0; transform: translateY(0.45em); filter: blur(8px); animation: wordIn 1.1s cubic-bezier(.2,.7,.2,1) forwards; }
+    @keyframes wordIn { to { opacity: 1; transform: none; filter: blur(0); } }
+
+    /* Champagne shimmer sweeping across gold text */
+    .shimmer { background: linear-gradient(100deg, var(--champagne) 0%, var(--champagne) 40%, #fff6dc 50%, var(--champagne) 60%, var(--champagne) 100%); background-size: 250% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: shimmer 6s ease-in-out infinite; }
+    @keyframes shimmer { 0%, 30% { background-position: 100% 0; } 70%, 100% { background-position: 0 0; } }
+
+    /* Scroll cue */
+    .scroll-cue { position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 10px; color: var(--muted); font-size: 0.62rem; letter-spacing: 0.3em; text-transform: uppercase; }
+    .scroll-cue .line { position: relative; width: 1px; height: 44px; background: rgba(255,255,255,0.15); overflow: hidden; }
+    .scroll-cue .line::after { content: ""; position: absolute; left: 0; top: -40%; width: 1px; height: 40%; background: var(--gold); animation: cue 2.2s cubic-bezier(.6,0,.4,1) infinite; }
+    @keyframes cue { to { top: 100%; } }
+
+    /* Infinite marquees */
+    .marquee { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); }
+    .marquee-track { display: flex; width: max-content; animation: marquee var(--speed, 38s) linear infinite; }
+    .marquee-track.reverse { animation-direction: reverse; }
+    .marquee:hover .marquee-track, .marquee:focus-within .marquee-track { animation-play-state: paused; }
+    @keyframes marquee { to { transform: translateX(-50%); } }
+    .spin-slow { animation: spin 14s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Rotating badge text */
+    .badge-ring { animation: spin 22s linear infinite; transform-origin: 50% 50%; }
+
+    /* Hero parallax layer */
+    #hero-parallax { top: -10%; bottom: -10%; will-change: transform; }
+
+    /* Gallery tilt */
+    .photo-card { transform-style: preserve-3d; transition: transform .5s cubic-bezier(.2,.7,.2,1), opacity .45s ease; }
+
+    /* Custom cursor (desktop only) */
+    .cursor-dot, .cursor-ring { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 80; border-radius: 9999px; opacity: 0; transition: opacity .3s ease; }
+    .cursor-dot { width: 6px; height: 6px; margin: -3px 0 0 -3px; background: var(--gold); }
+    .cursor-ring { width: 38px; height: 38px; margin: -19px 0 0 -19px; border: 1px solid rgba(212,175,55,0.6); display: grid; place-items: center; font-size: 0.55rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink); transition: width .35s ease, height .35s ease, margin .35s ease, background-color .35s ease, border-color .35s ease, opacity .3s ease; }
+    .cursor-ring span { opacity: 0; transition: opacity .25s ease; font-weight: 600; }
+    .cursor-on .cursor-dot, .cursor-on .cursor-ring { opacity: 1; }
+    .cursor-ring.is-link { width: 56px; height: 56px; margin: -28px 0 0 -28px; background: rgba(212,175,55,0.12); }
+    .cursor-ring.is-photo { width: 84px; height: 84px; margin: -42px 0 0 -42px; background: var(--gold); border-color: var(--gold); }
+    .cursor-ring.is-photo span { opacity: 1; }
+
+    /* Magnetic buttons */
+    .magnetic { transition: transform .35s cubic-bezier(.2,.7,.2,1), background-color .3s ease, color .3s ease, border-color .3s ease; }
+
+    /* Live inquiry toast */
+    #live-toast { left: calc(20px + env(safe-area-inset-left, 0px)); bottom: calc(20px + env(safe-area-inset-bottom, 0px)); max-width: calc(100vw - 110px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)); transform: translateY(140%); opacity: 0; transition: transform .7s cubic-bezier(.2,.8,.2,1), opacity .5s ease; }
+    #live-toast.show { transform: none; opacity: 1; }
+    .live-dot { position: relative; width: 8px; height: 8px; border-radius: 9999px; background: #4ade80; }
+    .live-dot::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: #4ade80; animation: waPulse 1.8s ease-out infinite; }
+
+    /* Section progress bar */
+    #progress { position: fixed; top: env(safe-area-inset-top, 0px); left: 0; height: 2px; width: 100%; transform-origin: 0 50%; transform: scaleX(0); background: linear-gradient(90deg, var(--gold-deep, #a8872a), var(--gold), var(--champagne)); z-index: 65; }
+
+    /* Hero portrait */
+    .hero-photo-wrap { animation: photoIn 1.4s .3s cubic-bezier(.2,.7,.2,1) both; }
+    @keyframes photoIn { from { opacity: 0; transform: translateY(30px) scale(.97); } to { opacity: 1; transform: none; } }
+    .hero-float { animation: floaty 7s ease-in-out infinite; }
+    @keyframes floaty { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+    .hero-photo img { animation: kenburns 16s ease-in-out infinite alternate; }
+    @keyframes kenburns { from { transform: scale(1.02); } to { transform: scale(1.1); } }
+
     a:focus-visible, button:focus-visible, .field:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
 
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
       .js .reveal:not(.in) { transform: none; }
       .hero-bg { transform: none; }
+      .word { opacity: 1; transform: none; filter: none; }
+      .shimmer { color: var(--champagne); background: none; }
+      .marquee-track { flex-wrap: wrap; width: auto; }
+      .marquee-track [aria-hidden="true"] { display: none; }
+      .cursor-dot, .cursor-ring, #dust { display: none; }
     }
   </style>
 </head>
@@ -152,7 +224,7 @@
           <span class="mt-1 text-[0.55rem] sm:text-[0.6rem] tracking-[0.42em] text-gold">WEDDING STORIES</span>
         </a>
 
-        <nav class="hidden md:flex items-center gap-9 text-[0.8rem] tracking-[0.14em] uppercase text-neutral-300" aria-label="Primary">
+        <nav class="hidden md:flex items-center gap-6 lg:gap-9 text-[0.8rem] tracking-[0.14em] uppercase text-neutral-300" aria-label="Primary">
           <a href="#portfolio" class="hover:text-gold transition-colors">Portfolio</a>
           <a href="#packages" class="hover:text-gold transition-colors">Packages</a>
           <a href="#reviews" class="hover:text-gold transition-colors">Reviews</a>
@@ -160,7 +232,7 @@
         </nav>
 
         <div class="flex items-center gap-3">
-          <a href="#contact" class="hidden sm:inline-flex items-center gap-2 border border-gold/70 px-5 py-2.5 text-[0.72rem] tracking-[0.18em] uppercase text-gold-soft hover:bg-gold hover:text-ink transition-colors">
+          <a href="#contact" class="magnetic hidden sm:inline-flex items-center gap-2 whitespace-nowrap border border-gold/70 px-4 lg:px-5 py-2.5 text-[0.72rem] tracking-[0.18em] uppercase text-gold-soft hover:bg-gold hover:text-ink transition-colors">
             Check Availability
           </a>
           <button id="menu-toggle" class="burger md:hidden flex flex-col gap-[5px] p-3 -mr-3" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
@@ -185,33 +257,58 @@
 
     <!-- ========== HERO ========== -->
     <section class="relative isolate overflow-hidden -mt-16 md:-mt-20" aria-label="Introduction">
-      <div class="hero-bg absolute inset-0 -z-20" style="background-image:url('https://images.unsplash.com/photo-1519741497674-611481863552?w=2000&q=80&auto=format&fit=crop');"></div>
+      <div id="hero-parallax" class="absolute inset-x-0 -z-20"><div class="hero-bg absolute inset-0" style="background-image:url('https://images.unsplash.com/photo-1519741497674-611481863552?w=2000&q=80&auto=format&fit=crop');"></div></div>
       <div class="hero-shade absolute inset-0 -z-10"></div>
+      <canvas id="dust" class="-z-10" aria-hidden="true"></canvas>
 
-      <div class="gutter mx-auto max-w-7xl pt-40 pb-16 md:pt-56 md:pb-24 min-h-[640px] md:min-h-[760px] flex flex-col justify-end">
-        <div class="max-w-3xl reveal">
+      <div class="gutter mx-auto max-w-7xl pt-32 pb-16 md:pt-44 md:pb-32 min-h-[640px] md:min-h-[760px] flex flex-col justify-end">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8 lg:gap-10 items-center">
+        <div class="md:col-span-7 reveal">
           <p class="eyebrow mb-6">Candid · Editorial · Cinematic</p>
-          <h1 class="font-serif font-medium text-[2.75rem] leading-[1.02] sm:text-6xl md:text-7xl lg:text-[5.5rem] text-neutral-50">
-            Timeless Moments, <em class="italic text-gold-soft font-normal">Captured with Soul.</em>
+          <h1 class="font-serif font-medium text-[2.75rem] leading-[1.02] sm:text-6xl md:text-[3.4rem] lg:text-[4.6rem] xl:text-[5.25rem] text-neutral-50">
+            <span class="split">Timeless Moments,</span> <em class="split italic font-normal shimmer-wrap">Captured with Soul.</em>
           </h1>
           <p class="mt-6 max-w-xl text-base md:text-lg leading-relaxed text-neutral-300 font-light">
             Editorial candid wedding photography for modern couples across South India &amp; destination venues.
           </p>
-          <div class="mt-9 flex flex-col sm:flex-row gap-3 sm:gap-4">
-            <a href="#portfolio" class="inline-flex items-center justify-center gap-3 bg-gold px-7 py-4 text-[0.75rem] tracking-[0.2em] uppercase font-semibold text-ink hover:bg-gold-soft transition-colors">
+          <div class="mt-9 flex flex-col sm:flex-row md:flex-col lg:flex-row gap-3 sm:gap-4">
+            <a href="#portfolio" class="magnetic inline-flex items-center justify-center gap-3 bg-gold px-7 py-4 text-[0.75rem] tracking-[0.2em] uppercase font-semibold text-ink hover:bg-gold-soft transition-colors">
               Explore Portfolio
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
             </a>
-            <a href="#contact" class="inline-flex items-center justify-center border border-white/30 px-7 py-4 text-[0.75rem] tracking-[0.2em] uppercase font-medium text-neutral-100 hover:border-gold hover:text-gold-soft transition-colors">
+            <a href="#contact" class="magnetic inline-flex items-center justify-center border border-white/30 px-7 py-4 text-[0.75rem] tracking-[0.2em] uppercase font-medium text-neutral-100 hover:border-gold hover:text-gold-soft transition-colors">
               Inquire for 2026/2027 Dates
             </a>
           </div>
         </div>
 
+        <!-- Hero portrait -->
+        <div class="md:col-span-5 relative mx-auto w-full max-w-[420px] md:max-w-none hero-photo-wrap">
+          <div class="hero-float relative">
+            <div class="absolute inset-0 translate-x-3 translate-y-3 sm:translate-x-4 sm:translate-y-4 border border-gold/50 rounded-t-[999px] rounded-b-[4px]" aria-hidden="true"></div>
+            <figure class="hero-photo relative overflow-hidden rounded-t-[999px] rounded-b-[4px] aspect-[4/5] bg-coal shadow-[0_40px_90px_-30px_rgba(0,0,0,0.9)]">
+              <img src="https://images.unsplash.com/photo-1770823218239-996df9afcff0?w=1200&q=80&auto=format&fit=crop" alt="Bride and groom holding hands, both adorned with intricate mehendi and wedding rings" class="w-full h-full object-cover" style="object-position:50% 50%" fetchpriority="high">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" aria-hidden="true"></div>
+              <figcaption class="absolute bottom-4 right-4 text-right">
+                <p class="font-serif italic text-lg text-neutral-50 leading-tight">Kavya &amp; Arjun</p>
+                <p class="text-[0.6rem] tracking-[0.22em] uppercase text-gold-soft mt-0.5">Muhurtham · Chennai</p>
+              </figcaption>
+            </figure>
+          </div>
+          <a href="#portfolio" class="absolute -left-4 sm:-left-8 -bottom-10 sm:-bottom-12 grid w-28 h-28 sm:w-32 sm:h-32 place-items-center rounded-full bg-ink/80 backdrop-blur text-gold-soft hover:text-gold transition-colors" aria-label="Explore the portfolio">
+            <svg class="badge-ring absolute inset-0 w-full h-full" viewBox="0 0 200 200" aria-hidden="true">
+              <defs><path id="ring-path" d="M100,100 m-72,0 a72,72 0 1,1 144,0 a72,72 0 1,1 -144,0"/></defs>
+              <text fill="currentColor" font-size="12.5" letter-spacing="3" font-family="Plus Jakarta Sans, sans-serif"><textPath href="#ring-path">EST. 2017 ✦ CHENNAI ✦ BANGALORE ✦ KOCHI ✦ </textPath></text>
+            </svg>
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+          </a>
+        </div>
+        </div>
+
         <!-- Trust bar -->
         <div class="mt-14 md:mt-20 border-t border-white/10 pt-6 flex flex-col md:flex-row md:items-center gap-4 md:gap-10 text-sm text-neutral-300 reveal">
           <div class="flex items-center gap-3">
-            <span class="font-serif text-3xl text-gold-soft leading-none">140+</span>
+            <span class="font-serif text-3xl text-gold-soft leading-none tabular-nums"><span data-count="140">140</span>+</span>
             <span class="leading-snug">Over 140+ Weddings<br class="hidden md:block"> Documented</span>
           </div>
           <span class="hidden md:block h-8 w-px bg-white/15" aria-hidden="true"></span>
@@ -223,10 +320,31 @@
               <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg>
               <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg>
             </span>
-            <span>Rated <strong class="text-neutral-50 font-semibold">4.9/5</strong> on WedMeGood &amp; Google</span>
+            <span>Rated <strong class="text-neutral-50 font-semibold tabular-nums"><span data-count="4.9" data-decimals="1">4.9</span>/5</strong> on WedMeGood &amp; Google</span>
           </div>
           <span class="hidden md:block h-8 w-px bg-white/15" aria-hidden="true"></span>
           <div class="text-neutral-400">Chennai · Bangalore · Kochi · Destination</div>
+        </div>
+      </div>
+      <div class="scroll-cue hidden md:flex" aria-hidden="true"><span>Scroll</span><span class="line"></span></div>
+    </section>
+
+    <!-- ========== MARQUEE BAND ========== -->
+    <section class="relative border-y border-white/5 bg-coal py-6 md:py-8" aria-label="Where we photograph">
+      <div class="marquee">
+        <div class="marquee-track items-center gap-10 md:gap-14 font-serif italic text-3xl md:text-5xl text-neutral-200 whitespace-nowrap" style="--speed:46s">
+          <div class="flex items-center gap-10 md:gap-14 pr-10 md:pr-14">
+            <span>Chennai</span><span class="text-gold text-xl not-italic" aria-hidden="true">✦</span>
+            <span class="text-neutral-500">Muhurtham</span><span class="text-gold text-xl not-italic" aria-hidden="true">✦</span>
+            <span>Kochi</span><span class="text-gold text-xl not-italic" aria-hidden="true">✦</span>
+            <span class="text-neutral-500">Sangeet</span><span class="text-gold text-xl not-italic" aria-hidden="true">✦</span>
+            <span>Bangalore</span><span class="text-gold text-xl not-italic" aria-hidden="true">✦</span>
+            <span class="text-neutral-500">Mehendi</span><span class="text-gold text-xl not-italic" aria-hidden="true">✦</span>
+            <span>Udaipur</span><span class="text-gold text-xl not-italic" aria-hidden="true">✦</span>
+            <span class="text-neutral-500">Reception</span><span class="text-gold text-xl not-italic" aria-hidden="true">✦</span>
+            <span>Goa</span><span class="text-gold text-xl not-italic" aria-hidden="true">✦</span>
+            <span class="text-neutral-500">Haldi</span><span class="text-gold text-xl not-italic" aria-hidden="true">✦</span>
+          </div>
         </div>
       </div>
     </section>
@@ -358,6 +476,18 @@
       </div>
     </section>
 
+    <!-- ========== STATS ========== -->
+    <section class="pb-20 md:pb-28" aria-label="Studio in numbers">
+      <div class="gutter mx-auto max-w-7xl">
+        <dl class="grid grid-cols-2 lg:grid-cols-4 border-t border-white/10">
+          <div class="py-8 pr-4 border-b lg:border-b-0 border-white/10 reveal"><dt class="text-[0.7rem] tracking-[0.2em] uppercase text-neutral-500">Weddings documented</dt><dd class="mt-2 font-serif text-5xl md:text-6xl text-gold-soft tabular-nums"><span data-count="140">140</span>+</dd></div>
+          <div class="py-8 pl-4 lg:pl-8 border-b lg:border-b-0 border-l border-white/10 reveal"><dt class="text-[0.7rem] tracking-[0.2em] uppercase text-neutral-500">Years behind the lens</dt><dd class="mt-2 font-serif text-5xl md:text-6xl text-gold-soft tabular-nums"><span data-count="9">9</span></dd></div>
+          <div class="py-8 pr-4 lg:pl-8 lg:border-l border-white/10 reveal"><dt class="text-[0.7rem] tracking-[0.2em] uppercase text-neutral-500">Destinations travelled</dt><dd class="mt-2 font-serif text-5xl md:text-6xl text-gold-soft tabular-nums"><span data-count="18">18</span></dd></div>
+          <div class="py-8 pl-4 lg:pl-8 border-l border-white/10 reveal"><dt class="text-[0.7rem] tracking-[0.2em] uppercase text-neutral-500">Frames delivered</dt><dd class="mt-2 font-serif text-5xl md:text-6xl text-gold-soft tabular-nums"><span data-count="85000" data-format="k">85k</span>+</dd></div>
+        </dl>
+      </div>
+    </section>
+
     <!-- ========== PACKAGES ========== -->
     <section id="packages" class="scroll-mt-20 py-20 md:py-32 bg-coal border-y border-white/5" aria-labelledby="packages-title">
       <div class="gutter mx-auto max-w-7xl">
@@ -448,8 +578,10 @@
           <p class="text-neutral-400 text-sm">4.9 average from 120+ reviews on WedMeGood &amp; Google</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-          <figure class="reveal flex flex-col border border-white/10 bg-coal p-7 md:p-8">
+        <div class="marquee -mx-4 md:mx-0" id="reviews-marquee">
+          <div class="marquee-track gap-5" style="--speed:60s">
+          <div class="review-set flex gap-5 pr-5">
+          <figure class="flex-none w-[82vw] max-w-[400px] whitespace-normal flex flex-col border border-white/10 bg-coal p-7 md:p-8">
             <div class="flex text-gold gap-0.5" aria-label="5 out of 5 stars">
               <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg>
             </div>
@@ -465,7 +597,7 @@
             </figcaption>
           </figure>
 
-          <figure class="reveal flex flex-col border border-white/10 bg-coal p-7 md:p-8">
+          <figure class="flex-none w-[82vw] max-w-[400px] whitespace-normal flex flex-col border border-white/10 bg-coal p-7 md:p-8">
             <div class="flex text-gold gap-0.5" aria-label="5 out of 5 stars">
               <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg>
             </div>
@@ -481,7 +613,7 @@
             </figcaption>
           </figure>
 
-          <figure class="reveal flex flex-col border border-white/10 bg-coal p-7 md:p-8">
+          <figure class="flex-none w-[82vw] max-w-[400px] whitespace-normal flex flex-col border border-white/10 bg-coal p-7 md:p-8">
             <div class="flex text-gold gap-0.5" aria-label="5 out of 5 stars">
               <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg>
             </div>
@@ -496,7 +628,10 @@
               </div>
             </figcaption>
           </figure>
+          </div>
+          </div>
         </div>
+        <p class="mt-6 text-xs text-neutral-500">Hover or tap a review to pause.</p>
       </div>
     </section>
 
@@ -642,6 +777,19 @@
     <svg class="w-7 h-7" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51l-.57-.01c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.07 2.88 1.21 3.08.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.7.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35M12.05 21.5h-.01a9.4 9.4 0 0 1-4.8-1.31l-.34-.2-3.57.94.95-3.48-.22-.36a9.42 9.42 0 0 1-1.44-5.02c0-5.2 4.23-9.43 9.44-9.43a9.37 9.37 0 0 1 6.67 2.77 9.37 9.37 0 0 1 2.76 6.67c0 5.2-4.24 9.43-9.44 9.43m8.03-17.46A11.27 11.27 0 0 0 12.05.72C5.79.72.7 5.8.7 12.06c0 2 .52 3.95 1.52 5.67L.6 23.6l6.01-1.58a11.33 11.33 0 0 0 5.43 1.38h.01c6.25 0 11.34-5.09 11.35-11.34 0-3.03-1.18-5.88-3.32-8.02"/></svg>
   </a>
 
+  <!-- ========== MOTION EXTRAS ========== -->
+  <div id="progress" aria-hidden="true"></div>
+  <div class="cursor-dot" aria-hidden="true"></div>
+  <div class="cursor-ring" aria-hidden="true"><span>View</span></div>
+
+  <div id="live-toast" class="fixed z-40 flex items-center gap-3 border border-gold/30 bg-coal/95 backdrop-blur px-4 py-3 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.8)]" role="status" aria-live="polite">
+    <span class="live-dot flex-none" aria-hidden="true"></span>
+    <p class="text-xs sm:text-sm text-neutral-300 leading-snug"><span id="toast-text">Meera from Kochi just checked availability for Dec 2026</span><span id="toast-time" class="block text-[0.65rem] tracking-[0.15em] uppercase text-neutral-500 mt-0.5">2 minutes ago</span></p>
+    <button id="toast-close" class="flex-none p-1 -mr-1 text-neutral-500 hover:text-gold-soft" aria-label="Dismiss">
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+
   <!-- ========== SUCCESS MODAL ========== -->
   <div id="success-modal" class="hidden-state fixed inset-0 z-[70] grid place-items-center gutter bg-black/70 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true">
     <div class="panel relative w-full max-w-md border border-gold/40 bg-coal p-8 sm:p-10 text-center">
@@ -682,8 +830,8 @@
       window.addEventListener('resize', function () { if (window.innerWidth >= 768) setMenu(false); });
 
       /* ---------- Image fallback (keeps cards elegant if a photo fails) ---------- */
-      document.querySelectorAll('.photo-card img').forEach(function (img) {
-        function fail() { img.closest('.photo-card').classList.add('img-failed'); }
+      document.querySelectorAll('.photo-card img, .hero-photo img').forEach(function (img) {
+        function fail() { img.closest('.photo-card, .hero-photo').classList.add('img-failed'); }
         if (img.complete && img.naturalWidth === 0) fail();
         img.addEventListener('error', fail);
       });
@@ -808,6 +956,202 @@
       } else {
         reveals.forEach(function (el) { el.classList.add('in'); });
       }
+
+      var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+      /* ---------- Headline word reveal ---------- */
+      var delay = 0.15;
+      document.querySelectorAll('h1 .split').forEach(function (part) {
+        var isGold = part.classList.contains('shimmer-wrap');
+        var words = part.textContent.trim().split(/\s+/);
+        part.textContent = '';
+        words.forEach(function (w, i) {
+          var span = document.createElement('span');
+          span.className = 'word' + (isGold ? ' shimmer-word' : '');
+          span.style.animationDelay = delay.toFixed(2) + 's';
+          var inner = document.createElement('span');
+          inner.textContent = w;
+          if (isGold) inner.className = 'shimmer';
+          span.appendChild(inner);
+          part.appendChild(span);
+          if (i < words.length - 1) part.appendChild(document.createTextNode(' '));
+          delay += 0.12;
+        });
+      });
+
+      /* ---------- Count-up numbers ---------- */
+      function formatNum(v, el) {
+        var d = parseInt(el.dataset.decimals || '0', 10);
+        if (el.dataset.format === 'k') return Math.round(v / 1000) + 'k';
+        return d ? v.toFixed(d) : Math.round(v).toLocaleString('en-IN');
+      }
+      function countUp(el) {
+        var target = parseFloat(el.dataset.count);
+        if (reduceMotion) { el.textContent = formatNum(target, el); return; }
+        var start = null, dur = 1800;
+        function step(t) {
+          if (!start) start = t;
+          var p = Math.min((t - start) / dur, 1);
+          var eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = formatNum(target * eased, el);
+          if (p < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+      }
+      var counters = document.querySelectorAll('[data-count]');
+      if ('IntersectionObserver' in window) {
+        var cio = new IntersectionObserver(function (entries) {
+          entries.forEach(function (en) { if (en.isIntersecting) { countUp(en.target); cio.unobserve(en.target); } });
+        }, { threshold: 0.6 });
+        counters.forEach(function (c) { cio.observe(c); });
+      }
+
+      /* ---------- Duplicate marquee content for a seamless loop ---------- */
+      document.querySelectorAll('.marquee-track').forEach(function (track) {
+        var set = track.firstElementChild;
+        var clone = set.cloneNode(true);
+        clone.setAttribute('aria-hidden', 'true');
+        clone.querySelectorAll('a, button').forEach(function (n) { n.tabIndex = -1; });
+        track.appendChild(clone);
+      });
+
+      /* ---------- Scroll progress + hero parallax ---------- */
+      var progress = document.getElementById('progress');
+      var parallax = document.getElementById('hero-parallax');
+      var ticking = false;
+      function onScrollFx() {
+        var h = document.documentElement.scrollHeight - window.innerHeight;
+        progress.style.transform = 'scaleX(' + (h > 0 ? window.scrollY / h : 0) + ')';
+        if (!reduceMotion && window.scrollY < window.innerHeight * 1.2) {
+          parallax.style.transform = 'translate3d(0,' + (window.scrollY * 0.25).toFixed(1) + 'px,0)';
+        }
+        ticking = false;
+      }
+      window.addEventListener('scroll', function () { if (!ticking) { requestAnimationFrame(onScrollFx); ticking = true; } }, { passive: true });
+      onScrollFx();
+
+      /* ---------- Gold dust particles in the hero ---------- */
+      var canvas = document.getElementById('dust');
+      if (canvas && canvas.getContext && !reduceMotion) {
+        var ctx = canvas.getContext('2d');
+        var dpr = Math.min(window.devicePixelRatio || 1, 2);
+        var particles = [], W = 0, H = 0, running = true;
+        function resize() {
+          var r = canvas.getBoundingClientRect();
+          W = r.width; H = r.height;
+          canvas.width = W * dpr; canvas.height = H * dpr;
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+          var n = Math.round(Math.min(70, W / 18));
+          particles = [];
+          for (var i = 0; i < n; i++) particles.push(makeP(true));
+        }
+        function makeP(anywhere) {
+          return {
+            x: Math.random() * W,
+            y: anywhere ? Math.random() * H : H + 10,
+            r: Math.random() * 1.8 + 0.4,
+            vy: Math.random() * 0.35 + 0.08,
+            vx: (Math.random() - 0.5) * 0.15,
+            a: Math.random() * 0.5 + 0.15,
+            tw: Math.random() * Math.PI * 2
+          };
+        }
+        function draw() {
+          if (!running) return;
+          ctx.clearRect(0, 0, W, H);
+          particles.forEach(function (p, i) {
+            p.y -= p.vy; p.x += p.vx + Math.sin(p.tw) * 0.12; p.tw += 0.015;
+            if (p.y < -10) particles[i] = makeP(false);
+            var alpha = p.a * (0.6 + 0.4 * Math.sin(p.tw * 2));
+            ctx.beginPath();
+            ctx.fillStyle = 'rgba(232, 210, 154,' + alpha.toFixed(3) + ')';
+            ctx.shadowColor = 'rgba(212, 175, 55, 0.8)';
+            ctx.shadowBlur = p.r * 4;
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fill();
+          });
+          requestAnimationFrame(draw);
+        }
+        resize();
+        window.addEventListener('resize', resize);
+        if ('IntersectionObserver' in window) {
+          new IntersectionObserver(function (en) {
+            var vis = en[0].isIntersecting;
+            if (vis && !running) { running = true; requestAnimationFrame(draw); } else if (!vis) { running = false; }
+          }).observe(canvas);
+        }
+        requestAnimationFrame(draw);
+      }
+
+      /* ---------- Custom cursor, magnetic buttons, photo tilt (desktop) ---------- */
+      if (finePointer && !reduceMotion) {
+        var dot = document.querySelector('.cursor-dot');
+        var ring = document.querySelector('.cursor-ring');
+        var mx = -100, my = -100, rx = -100, ry = -100;
+        document.addEventListener('mousemove', function (e) {
+          mx = e.clientX; my = e.clientY;
+          dot.style.transform = 'translate(' + mx + 'px,' + my + 'px)';
+          document.body.classList.add('cursor-on');
+        });
+        document.addEventListener('mouseleave', function () { document.body.classList.remove('cursor-on'); });
+        (function loop() {
+          rx += (mx - rx) * 0.16; ry += (my - ry) * 0.16;
+          ring.style.transform = 'translate(' + rx.toFixed(1) + 'px,' + ry.toFixed(1) + 'px)';
+          requestAnimationFrame(loop);
+        })();
+        document.addEventListener('mouseover', function (e) {
+          var photo = e.target.closest('.photo-card');
+          var link = e.target.closest('a, button, label, select, input, textarea');
+          ring.classList.toggle('is-photo', !!photo);
+          ring.classList.toggle('is-link', !photo && !!link);
+        });
+
+        document.querySelectorAll('.magnetic').forEach(function (btn) {
+          btn.addEventListener('mousemove', function (e) {
+            var r = btn.getBoundingClientRect();
+            var x = e.clientX - r.left - r.width / 2, y = e.clientY - r.top - r.height / 2;
+            btn.style.transform = 'translate(' + (x * 0.18).toFixed(1) + 'px,' + (y * 0.3).toFixed(1) + 'px)';
+          });
+          btn.addEventListener('mouseleave', function () { btn.style.transform = ''; });
+        });
+
+        document.querySelectorAll('.photo-card').forEach(function (card) {
+          card.addEventListener('mousemove', function (e) {
+            var r = card.getBoundingClientRect();
+            var px = (e.clientX - r.left) / r.width - 0.5, py = (e.clientY - r.top) / r.height - 0.5;
+            card.style.transform = 'perspective(900px) rotateY(' + (px * 6).toFixed(2) + 'deg) rotateX(' + (-py * 6).toFixed(2) + 'deg)';
+          });
+          card.addEventListener('mouseleave', function () { card.style.transform = ''; });
+        });
+      }
+
+      /* ---------- Live inquiry toast ---------- */
+      var toast = document.getElementById('live-toast');
+      var toastText = document.getElementById('toast-text');
+      var toastTime = document.getElementById('toast-time');
+      var toastMsgs = [
+        ['Meera from Kochi just checked availability for Dec 2026', '2 minutes ago'],
+        ['Rahul & Divya booked The Signature Wedding', '1 hour ago'],
+        ['Anjali from Bangalore requested a destination quote', '12 minutes ago'],
+        ['Karthik from Chennai checked dates for Feb 2027', '25 minutes ago']
+      ];
+      var toastIdx = 0, toastDismissed = false, toastTimer;
+      function cycleToast() {
+        if (toastDismissed) return;
+        toastText.textContent = toastMsgs[toastIdx][0];
+        toastTime.textContent = toastMsgs[toastIdx][1];
+        toast.classList.add('show');
+        toastIdx = (toastIdx + 1) % toastMsgs.length;
+        toastTimer = setTimeout(function () {
+          toast.classList.remove('show');
+          toastTimer = setTimeout(cycleToast, 9000);
+        }, 5500);
+      }
+      document.getElementById('toast-close').addEventListener('click', function () {
+        toastDismissed = true; clearTimeout(toastTimer); toast.classList.remove('show');
+      });
+      setTimeout(cycleToast, 4000);
 
       /* ---------- Footer year ---------- */
       document.getElementById('year').textContent = new Date().getFullYear();
